@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Ember, Dragon Porter
   modelPrefab: {fileID: 4081339990813652608, guid: 873f6a3fcfca7004ab6ffae2706273fd, type: 3}
   avatarOverride: {fileID: 0}
+  portraitPrefab: {fileID: 7510799560093212513, guid: ef9dca5d11aba8b43a6541cbb376edb9, type: 3}
   materialOverrides: []
   useTint: 0
   tint: {r: 1, g: 1, b: 1, a: 1}

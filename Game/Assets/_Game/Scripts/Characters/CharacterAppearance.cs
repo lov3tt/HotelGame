@@ -12,6 +12,9 @@ public class CharacterAppearance : ScriptableObject
     [Tooltip("Optional. Overrides the Avatar found on the model's Animator.")]
     public Avatar avatarOverride;
 
+    [Tooltip("Optional. Animated bust for the staff bar and pop-ups: a PortraitPuppet prefab, or a Live2D Cubism model prefab.")]
+    public GameObject portraitPrefab;
+
     [Header("Dressing")]
     [Tooltip("Optional material swaps by slot index. Empty entries keep the model's own material.")]
     public Material[] materialOverrides;

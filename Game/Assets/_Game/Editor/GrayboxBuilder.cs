@@ -75,7 +75,7 @@ public static class GrayboxBuilder
 
         var sun = BuildLightAndCamera();
         BuildThemeManager(setup.theme, sun);
-        BuildHud();
+        BuildHud(setup);
         BuildDemoCharacters(setup);
 
         var surface = inn.AddComponent<NavMeshSurface>();
@@ -295,6 +295,7 @@ public static class GrayboxBuilder
         var cam = camGo.AddComponent<Camera>();
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = new Color(0.55f, 0.70f, 0.85f);
+        cam.cullingMask = ~(1 << PortraitView.PortraitLayer);
         camGo.AddComponent<CutawayCameraController>();
         return light;
     }
@@ -313,7 +314,7 @@ public static class GrayboxBuilder
     public const string HudPurseTemplate = "{ui.purse}: 100{currency.symbol}";
 
     // Top bar with the inn's name and a purse placeholder (the real purse arrives with the economy).
-    static void BuildHud()
+    static void BuildHud(ProjectSetup.Assets setup)
     {
         var hud = new GameObject("HUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         hud.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
@@ -334,10 +335,56 @@ public static class GrayboxBuilder
         Label("InnName", barRect, "{inn.name}", PaletteRole.Highlight, 36, TextAlignmentOptions.MidlineLeft);
         Label("Purse", barRect, HudPurseTemplate, PaletteRole.Text, 28, TextAlignmentOptions.MidlineRight);
 
+        BuildStaffBar(hud.transform, setup);
         new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
     }
 
-    static void Label(string name, RectTransform parent, string template, PaletteRole color, float size, TextAlignmentOptions align)
+    public const float StaffCardWidth = 150f, StaffCardHeight = 200f, StaffCardGap = 10f;
+
+    // Bottom-left row of staff cards, each with the persona's live portrait (PortraitView),
+    // name and themed role. Drag-and-drop assignment from these cards arrives in Milestone 7.
+    static void BuildStaffBar(Transform hud, ProjectSetup.Assets setup)
+    {
+        var bar = new GameObject("StaffBar", typeof(RectTransform));
+        var barRect = (RectTransform)bar.transform;
+        barRect.SetParent(hud, false);
+        barRect.anchorMin = barRect.anchorMax = barRect.pivot = Vector2.zero;
+        barRect.anchoredPosition = new Vector2(16, 16);
+        var roles = ProjectSetup.PersonaRoles;
+        barRect.sizeDelta = new Vector2(roles.Length * (StaffCardWidth + StaffCardGap) - StaffCardGap, StaffCardHeight);
+
+        for (int i = 0; i < roles.Length; i++)
+        {
+            var look = setup.personaByRole[roles[i]];
+            string personaName = look.displayName.Split(',')[0].Trim();
+            var card = new GameObject("Card_" + personaName, typeof(RectTransform), typeof(Image));
+            var cardRect = (RectTransform)card.transform;
+            cardRect.SetParent(barRect, false);
+            cardRect.anchorMin = cardRect.anchorMax = cardRect.pivot = Vector2.zero;
+            cardRect.anchoredPosition = new Vector2(i * (StaffCardWidth + StaffCardGap), 0);
+            cardRect.sizeDelta = new Vector2(StaffCardWidth, StaffCardHeight);
+            card.AddComponent<ThemedGraphic>();
+
+            var portrait = new GameObject("Portrait", typeof(RectTransform), typeof(RawImage));
+            var portraitRect = (RectTransform)portrait.transform;
+            portraitRect.SetParent(cardRect, false);
+            portraitRect.anchorMin = new Vector2(0, 1);
+            portraitRect.anchorMax = new Vector2(1, 1);
+            portraitRect.pivot = new Vector2(0.5f, 1);
+            portraitRect.anchoredPosition = new Vector2(0, -4);
+            portraitRect.sizeDelta = new Vector2(-8, StaffCardWidth - 8);
+            var view = portrait.AddComponent<PortraitView>();
+            view.SetAppearance(look);
+            SetField(view, "appearance", look);
+
+            var label = Label("Name", cardRect, personaName + "\n<size=70%>{" + roles[i] + "}</size>",
+                PaletteRole.Text, 22, TextAlignmentOptions.Bottom);
+            label.offsetMin = new Vector2(6, 6);
+            label.offsetMax = new Vector2(-6, 0);
+        }
+    }
+
+    static RectTransform Label(string name, RectTransform parent, string template, PaletteRole color, float size, TextAlignmentOptions align)
     {
         var go = new GameObject(name, typeof(RectTransform));
         var rect = (RectTransform)go.transform;
@@ -354,6 +401,7 @@ public static class GrayboxBuilder
         SetField(themed, "template", template);
         SetField(themed, "color", (int)color);
         themed.Template = template; // refresh now so the label shows in the editor straight away
+        return rect;
     }
 
     // The staff personas at their posts plus a couple of guests, to show the model and theme systems working.

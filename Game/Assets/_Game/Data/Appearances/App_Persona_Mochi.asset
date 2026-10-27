@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Mochi, Catgirl Server
   modelPrefab: {fileID: 923427824301969203, guid: a21de94f793974f43bab96d39a5d9d3f, type: 3}
   avatarOverride: {fileID: 0}
+  portraitPrefab: {fileID: 5641687453738203936, guid: 6bd7069b7bfd7ee4e898ae24687d2ed7, type: 3}
   materialOverrides: []
   useTint: 0
   tint: {r: 1, g: 1, b: 1, a: 1}

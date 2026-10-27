@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Lumi, Elf Receptionist
   modelPrefab: {fileID: 7818681451704677504, guid: 4e5afc9d4e306be41a6dd1cab7f39c9e, type: 3}
   avatarOverride: {fileID: 0}
+  portraitPrefab: {fileID: 1720720217023413058, guid: a9edf0d94a092b14eb60de3d85049f61, type: 3}
   materialOverrides: []
   useTint: 0
   tint: {r: 1, g: 1, b: 1, a: 1}

@@ -21,7 +21,7 @@ Two themes ship in `Assets/_Game/Data/Themes/`:
 
 To switch between them, drag one onto the **Game** object's **ThemeManager → Theme**.
 
-Each persona's look is an appearance asset (`Data/Appearances/App_Persona_*.asset`). Replace its model with real art, such as a Humanoid model or later a Live2D model, and every place that persona appears updates.
+Each persona's look is an appearance asset (`Data/Appearances/App_Persona_*.asset`). Replace its model with real art, such as a Humanoid model, and every place that persona appears updates. Its **Portrait Prefab** is the animated bust in the staff bar. It's a built-in 2.5D puppet now, and can be replaced by a real Live2D model. See [Live2D.md](Live2D.md).
 
 ### Make a new theme
 1. In the Project window, select `Theme_Medieval` and press **Ctrl+D** to duplicate it. Rename the copy, e.g. `Theme_Saloon`.

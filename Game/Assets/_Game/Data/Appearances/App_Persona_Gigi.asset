@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Gigi, Gremlin Chef
   modelPrefab: {fileID: 2675663010932398695, guid: b05253091ab8dfb4fa438459d92011cb, type: 3}
   avatarOverride: {fileID: 0}
+  portraitPrefab: {fileID: 6925719062423574533, guid: 670cceaadc92b7045b96a8a9d500d09a, type: 3}
   materialOverrides: []
   useTint: 0
   tint: {r: 1, g: 1, b: 1, a: 1}

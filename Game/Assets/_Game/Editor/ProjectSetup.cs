@@ -47,6 +47,9 @@ public static class ProjectSetup
     public static readonly HashSet<string> LoopingClips = new HashSet<string>
         { "idle", "walk", "carry", "cook", "clean", "stoke", "sit", "sleep", "pour", "pourbath" };
 
+    // Persona appearances in staff-bar order.
+    public static string[] PersonaRoles => Personas.Select(p => p.role).ToArray();
+
     public struct Assets
     {
         public ThemeProfile theme;          // the active theme for the scene (Isekai Stream)
@@ -98,11 +101,19 @@ public static class ProjectSetup
         var staffApp = EnsureAppearance(StaffAppearancePath, "Placeholder Staff", staffModel);
         var guestApp = EnsureAppearance(GuestAppearancePath, "Placeholder Guest", guestModel);
 
+        var portraits = PortraitBuilder.BuildAll();
         var personaByRole = new Dictionary<string, CharacterAppearance>();
         foreach (var p in Personas)
         {
             var model = EnsureMannequin("Persona_" + p.id, p.cloth, p.hair, p.look);
-            personaByRole[p.role] = EnsureAppearance(AppearancesDir + "/App_Persona_" + p.id + ".asset", p.displayName, model, p.height);
+            var app = EnsureAppearance(AppearancesDir + "/App_Persona_" + p.id + ".asset", p.displayName, model, p.height);
+            // Only fill an empty slot, so a Live2D model assigned by hand is kept.
+            if (app.portraitPrefab == null && portraits.TryGetValue(p.id, out var portrait))
+            {
+                app.portraitPrefab = portrait;
+                EditorUtility.SetDirty(app);
+            }
+            personaByRole[p.role] = app;
         }
 
         var medieval = EnsureTheme(ThemePath, theme => ConfigureMedieval(theme, staffApp, guestApp));

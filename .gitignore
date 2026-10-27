@@ -33,6 +33,14 @@
 /Game/[Aa]ssets/[Ss]treamingAssets/aa*
 crashlytics-build.properties
 
+# Live2D Cubism SDK: licensed per machine, not for republishing (see docs/Live2D.md)
+/Game/Assets/Live2D/
+/Game/Assets/Live2D.meta
+/Game/Assets/csc.rsp
+/Game/Assets/csc.rsp.meta
+/Game/Assets/mcs.rsp
+/Game/Assets/mcs.rsp.meta
+
 # OS
 .DS_Store
 Thumbs.db

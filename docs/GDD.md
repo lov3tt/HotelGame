@@ -60,9 +60,11 @@ These are names in the theme; the underlying mechanics are unchanged.
 ### Planned stream features (post-slice, presentation only)
 - **Chat feed:** guest feedback appears as chat messages, e.g. "the bath was cold lol" or "Mochi carried 2 trays POG".
 - **Raid events:** a Noble or a big pilgrim group arrives as a "raid", a burst of guests at once.
-- **Live2D staff portraits:** in the staff bar, hiring board and events. Expressions react to fatigue, morale and rush-hour panic.
-  - Built on the official Cubism SDK for Unity.
-  - A Live2D appearance would plug into `CharacterAppearance` / `AgentAnimator`, so gameplay code is unaffected.
+- **Live2D staff portraits (started):** in the staff bar, hiring board and events. Expressions react to fatigue, morale and rush-hour panic.
+  - **Done:**
+    - The staff bar shows all five personas as animated 2.5D puppets (`PortraitPuppet`), with Happy, Tired and Panic moods (`PortraitDriver`).
+    - Real Cubism models plug into the same `CharacterAppearance → Portrait Prefab` slot through `CubismPortraitModel`. See `docs/Live2D.md`.
+  - **To do:** gameplay sets each mood from fatigue and morale (M7), plus portraits on the hiring board and event pop-ups.
 - **Persona events:** for example, "Gigi set the kitchen on fire. Chat loved it (+followers, −stew)."
 
 ### Art notes

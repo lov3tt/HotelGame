@@ -1,0 +1,458 @@
+{
+ "id": "Ember",
+ "title": "Ember, Dragon Porter",
+ "canvas": [
+  1024,
+  1024
+ ],
+ "groups": [
+  {
+   "name": "Body",
+   "parent": "",
+   "pivot": [
+    512,
+    1024
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "Head",
+   "parent": "Body",
+   "pivot": [
+    512,
+    640
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "HairBack",
+   "parent": "Head",
+   "pivot": [
+    512,
+    250
+   ],
+   "swing": 0.35
+  },
+  {
+   "name": "HairSideL",
+   "parent": "Head",
+   "pivot": [
+    362,
+    300
+   ],
+   "swing": 1.0
+  },
+  {
+   "name": "HairSideR",
+   "parent": "Head",
+   "pivot": [
+    662,
+    300
+   ],
+   "swing": 1.0
+  },
+  {
+   "name": "EyeL",
+   "parent": "Head",
+   "pivot": [
+    438,
+    462
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "EyeR",
+   "parent": "Head",
+   "pivot": [
+    586,
+    462
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "IrisL",
+   "parent": "EyeL",
+   "pivot": [
+    438,
+    462
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "IrisR",
+   "parent": "EyeR",
+   "pivot": [
+    586,
+    462
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "BrowL",
+   "parent": "Head",
+   "pivot": [
+    438,
+    398
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "BrowR",
+   "parent": "Head",
+   "pivot": [
+    586,
+    398
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "Mouth",
+   "parent": "Head",
+   "pivot": [
+    512,
+    562
+   ],
+   "swing": 0.0
+  },
+  {
+   "name": "Tail",
+   "parent": "Body",
+   "pivot": [
+    690,
+    1024
+   ],
+   "swing": 1.3
+  }
+ ],
+ "layers": [
+  {
+   "name": "tail",
+   "file": "tail.png",
+   "group": "Tail",
+   "order": 0,
+   "depth": -0.6,
+   "rect": [
+    661,
+    486,
+    229,
+    538
+   ]
+  },
+  {
+   "name": "hair_back",
+   "file": "hair_back.png",
+   "group": "HairBack",
+   "order": 1,
+   "depth": -0.5,
+   "rect": [
+    282,
+    98,
+    460,
+    507
+   ]
+  },
+  {
+   "name": "body",
+   "file": "body.png",
+   "group": "Body",
+   "order": 2,
+   "depth": -0.2,
+   "rect": [
+    258,
+    554,
+    508,
+    470
+   ]
+  },
+  {
+   "name": "outfit",
+   "file": "outfit.png",
+   "group": "Body",
+   "order": 3,
+   "depth": -0.15,
+   "rect": [
+    355,
+    702,
+    333,
+    322
+   ]
+  },
+  {
+   "name": "horn_L",
+   "file": "horn_L.png",
+   "group": "Head",
+   "order": 4,
+   "depth": -0.3,
+   "rect": [
+    303,
+    55,
+    150,
+    177
+   ]
+  },
+  {
+   "name": "horn_R",
+   "file": "horn_R.png",
+   "group": "Head",
+   "order": 5,
+   "depth": -0.3,
+   "rect": [
+    571,
+    55,
+    150,
+    177
+   ]
+  },
+  {
+   "name": "face",
+   "file": "face.png",
+   "group": "Head",
+   "order": 6,
+   "depth": 0.0,
+   "rect": [
+    337,
+    170,
+    350,
+    450
+   ]
+  },
+  {
+   "name": "blush",
+   "file": "blush.png",
+   "group": "Head",
+   "order": 7,
+   "depth": 0.06,
+   "rect": [
+    381,
+    503,
+    262,
+    59
+   ]
+  },
+  {
+   "name": "mouth_closed",
+   "file": "mouth_closed.png",
+   "group": "Mouth",
+   "order": 8,
+   "depth": 0.12,
+   "rect": [
+    493,
+    557,
+    40,
+    12
+   ]
+  },
+  {
+   "name": "mouth_open",
+   "file": "mouth_open.png",
+   "group": "Mouth",
+   "order": 9,
+   "depth": 0.12,
+   "rect": [
+    477,
+    542,
+    70,
+    50
+   ]
+  },
+  {
+   "name": "eye_white_L",
+   "file": "eye_white_L.png",
+   "group": "EyeL",
+   "order": 10,
+   "depth": 0.15,
+   "rect": [
+    387,
+    421,
+    96,
+    78
+   ]
+  },
+  {
+   "name": "iris_L",
+   "file": "iris_L.png",
+   "group": "IrisL",
+   "order": 11,
+   "depth": 0.18,
+   "rect": [
+    404,
+    426,
+    64,
+    77
+   ]
+  },
+  {
+   "name": "eye_highlight_L",
+   "file": "eye_highlight_L.png",
+   "group": "IrisL",
+   "order": 12,
+   "depth": 0.22,
+   "rect": [
+    413,
+    436,
+    44,
+    53
+   ]
+  },
+  {
+   "name": "eye_lash_L",
+   "file": "eye_lash_L.png",
+   "group": "EyeL",
+   "order": 13,
+   "depth": 0.2,
+   "rect": [
+    370,
+    410,
+    117,
+    90
+   ]
+  },
+  {
+   "name": "eye_closed_L",
+   "file": "eye_closed_L.png",
+   "group": "EyeL",
+   "order": 14,
+   "depth": 0.2,
+   "rect": [
+    375,
+    451,
+    112,
+    37
+   ]
+  },
+  {
+   "name": "eye_white_R",
+   "file": "eye_white_R.png",
+   "group": "EyeR",
+   "order": 15,
+   "depth": 0.15,
+   "rect": [
+    542,
+    421,
+    95,
+    78
+   ]
+  },
+  {
+   "name": "iris_R",
+   "file": "iris_R.png",
+   "group": "IrisR",
+   "order": 16,
+   "depth": 0.18,
+   "rect": [
+    556,
+    426,
+    64,
+    77
+   ]
+  },
+  {
+   "name": "eye_highlight_R",
+   "file": "eye_highlight_R.png",
+   "group": "IrisR",
+   "order": 17,
+   "depth": 0.22,
+   "rect": [
+    565,
+    436,
+    44,
+    53
+   ]
+  },
+  {
+   "name": "eye_lash_R",
+   "file": "eye_lash_R.png",
+   "group": "EyeR",
+   "order": 18,
+   "depth": 0.2,
+   "rect": [
+    537,
+    410,
+    117,
+    90
+   ]
+  },
+  {
+   "name": "eye_closed_R",
+   "file": "eye_closed_R.png",
+   "group": "EyeR",
+   "order": 19,
+   "depth": 0.2,
+   "rect": [
+    537,
+    451,
+    112,
+    37
+   ]
+  },
+  {
+   "name": "brow_L",
+   "file": "brow_L.png",
+   "group": "BrowL",
+   "order": 20,
+   "depth": 0.25,
+   "rect": [
+    393,
+    385,
+    86,
+    22
+   ]
+  },
+  {
+   "name": "brow_R",
+   "file": "brow_R.png",
+   "group": "BrowR",
+   "order": 21,
+   "depth": 0.25,
+   "rect": [
+    545,
+    385,
+    86,
+    22
+   ]
+  },
+  {
+   "name": "hair_front",
+   "file": "hair_front.png",
+   "group": "Head",
+   "order": 22,
+   "depth": 0.4,
+   "rect": [
+    325,
+    134,
+    374,
+    291
+   ]
+  },
+  {
+   "name": "hair_side_L",
+   "file": "hair_side_L.png",
+   "group": "HairSideL",
+   "order": 23,
+   "depth": 0.3,
+   "rect": [
+    318,
+    294,
+    86,
+    271
+   ]
+  },
+  {
+   "name": "hair_side_R",
+   "file": "hair_side_R.png",
+   "group": "HairSideR",
+   "order": 24,
+   "depth": 0.3,
+   "rect": [
+    620,
+    294,
+    86,
+    271
+   ]
+  }
+ ],
+ "defaults": {
+  "ParamEyeLOpen": 0.62,
+  "ParamEyeROpen": 0.62
+ }
+}
