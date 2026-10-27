@@ -6,6 +6,7 @@ using UnityEngine;
 
 // Renders the Inn scene's camera at several zoom levels to PNG files,
 // so the 2D → 3D zoom blend can be checked without pressing Play.
+// Shows the 3D scene only: screen-space UI (the HUD) isn't part of a camera render.
 //
 // Editor:   InnKeeper → Capture Camera Previews  (writes to <repo>/previews)
 // Headless: Unity.exe -batchmode -quit -projectPath Game -executeMethod CameraPreview.Capture [-previewOut <dir>]
@@ -20,6 +21,7 @@ public static class CameraPreview
         ("2_mid_still_2d", 0.55f, new Vector3(4f, 4.5f, 2.5f)),
         ("3_tilting", 0.8f, new Vector3(4f, 4.5f, 3f)),
         ("4_zoomed_in_3d", 1f, new Vector3(8.5f, 7f, 3f)),
+        ("5_lobby_characters_3d", 1f, new Vector3(-0.8f, 1.1f, 2.5f)),
     };
 
     [MenuItem("InnKeeper/Capture Camera Previews")]

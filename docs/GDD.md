@@ -309,7 +309,7 @@ Stairs are the key spatial pressure. Upper rooms pay more but take longer to ser
 - All guests and staff use a `CharacterRig` prefab. It has an empty **Model slot** and the shared Humanoid Animator Controller.
 - A `CharacterAppearance` asset contains: the model prefab (any **Humanoid-rigged** FBX), optional material variants and a height scale.
 - The staff panel lets you change any staff member's appearance. Each guest type has a pool of appearances.
-- See `docs/CustomCharacters.md` (written in Milestone 2) for the import steps.
+- See `docs/Customising.md` for step-by-step theme, model and animation setup.
 
 ### 9.3 Animations
 - **States:** Idle, Walk, Carry (upper-body layer: tray, buckets, wood, luggage), Knock, Serve, Pour, Cook, Stoke, Pour Bath, Make Bed, Clean, Sit, Sleep.

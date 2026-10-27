@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f8571e04c8ef1429c18014a6aa0074, type: 3}
+  m_Name: Theme_Medieval
+  m_EditorClassIdentifier: 
+  innName: The Wayside
+  currencyName: Coin
+  currencySymbol: c
+  names:
+  - key: role.clerk
+    displayName: Clerk
+  - key: role.porter
+    displayName: Porter
+  - key: role.server
+    displayName: Server
+  - key: role.chambermaid
+    displayName: Chambermaid
+  - key: role.cook
+    displayName: Cook
+  - key: guest.pilgrim
+    displayName: Pilgrim
+  - key: guest.traveller
+    displayName: Traveller
+  - key: guest.merchant
+    displayName: Merchant
+  - key: guest.noble
+    displayName: Noble
+  - key: room.bunk
+    displayName: Bunk Room
+  - key: room.common
+    displayName: Common Room
+  - key: room.private
+    displayName: Private Chamber
+  - key: room.suite
+    displayName: Noble Suite
+  - key: service.meal
+    displayName: Supper
+  - key: service.drink
+    displayName: Ale
+  - key: service.firewood
+    displayName: Firewood
+  - key: service.bath
+    displayName: Hot Bath
+  - key: service.turndown
+    displayName: Turndown
+  - key: service.boot_polish
+    displayName: Boot Polish
+  - key: service.wake_up
+    displayName: Wake-up Call
+  - key: service.luggage
+    displayName: Luggage
+  - key: tier.d
+    displayName: Apprentice
+  - key: tier.c
+    displayName: Hand
+  - key: tier.b
+    displayName: Journeyman
+  - key: tier.a
+    displayName: Skilled
+  - key: tier.s
+    displayName: Master
+  - key: place.front_desk
+    displayName: Front Desk
+  - key: place.kitchen
+    displayName: Kitchen
+  - key: place.laundry
+    displayName: Laundry
+  - key: place.rest_area
+    displayName: Servants' Room
+  - key: place.yard
+    displayName: Yard
+  firstNames:
+  - Marta
+  - Edric
+  - Agnes
+  - Osric
+  - Matilda
+  - Wulfric
+  - Beatrix
+  - Godwin
+  - Isolde
+  - Aldous
+  - Rowena
+  - Hugh
+  - Elspeth
+  - Tobias
+  - Maud
+  - Cedric
+  - Joan
+  - Alaric
+  - Gwen
+  - Piers
+  palette:
+    panel: {r: 0.22, g: 0.16, b: 0.11, a: 0.92}
+    panelAccent: {r: 0.45, g: 0.3, b: 0.16, a: 1}
+    text: {r: 0.96, g: 0.91, b: 0.8, a: 1}
+    textMuted: {r: 0.75, g: 0.68, b: 0.56, a: 1}
+    highlight: {r: 0.95, g: 0.75, b: 0.3, a: 1}
+    good: {r: 0.45, g: 0.8, b: 0.4, a: 1}
+    warning: {r: 0.95, g: 0.8, b: 0.25, a: 1}
+    bad: {r: 0.85, g: 0.3, b: 0.25, a: 1}
+  uiFont: {fileID: 0}
+  panelSprite: {fileID: 0}
+  props: []
+  backgroundColor: {r: 0.55, g: 0.7, b: 0.85, a: 1}
+  sunColor: {r: 1, g: 0.95, b: 0.85, a: 1}
+  sunIntensity: 1.2
+  ambientColor: {r: 0.45, g: 0.45, b: 0.5, a: 1}
+  serviceBell: {fileID: 0}
+  music: {fileID: 0}
+  staffAppearances:
+  - {fileID: 11400000, guid: 6ff13ff8626ae0649a8421c3dc0d1536, type: 2}
+  guestAppearances:
+  - guestType: guest.pilgrim
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}
+  - guestType: guest.traveller
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}
+  - guestType: guest.merchant
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}
+  - guestType: guest.noble
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}

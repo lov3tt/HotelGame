@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3a48f8c819bf754b90d52cd1ae3f42a, type: 3}
+  m_Name: App_Guest_Placeholder
+  m_EditorClassIdentifier: 
+  displayName: Placeholder Guest
+  modelPrefab: {fileID: 3750375368219276773, guid: 0752c93484f5a9e41b9d66a22bd19f6f, type: 3}
+  avatarOverride: {fileID: 0}
+  materialOverrides: []
+  useTint: 0
+  tint: {r: 1, g: 1, b: 1, a: 1}
+  heightScale: 1
+  modelOffset: {x: 0, y: 0, z: 0}
+  yawOffset: 0

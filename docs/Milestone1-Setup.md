@@ -75,4 +75,4 @@ It writes four PNGs to `previews/`: zoomed-out 2D, mid zoom (still 2D), tilting,
 - [ ] You've opened it in the editor and the controls feel right.
 - [ ] It's committed to git.
 
-**Next:** Milestone 2, theme profiles and swappable character models.
+**Next:** Milestone 2 (done): theme profiles and swappable character models. See `docs/Customising.md`.
