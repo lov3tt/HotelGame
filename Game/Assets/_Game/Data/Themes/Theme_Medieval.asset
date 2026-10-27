@@ -78,6 +78,12 @@ MonoBehaviour:
     displayName: Servants' Room
   - key: place.yard
     displayName: Yard
+  - key: ui.purse
+    displayName: Purse
+  - key: ui.reputation
+    displayName: Reputation
+  - key: ui.tip
+    displayName: Tip
   firstNames:
   - Marta
   - Edric

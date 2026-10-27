@@ -9,12 +9,14 @@ using UnityEngine;
 //   - TextMeshPro essential resources
 //   - Animation/InnCharacter.controller: shared Humanoid controller, with clips auto-filled
 //     from Animation/Clips by file name (Idle.fbx, Walk.fbx, Serve.fbx, ...)
-//   - Placeholder mannequin models + their CharacterAppearance assets
-//   - Data/Themes/Theme_Medieval.asset
+//   - Placeholder mannequin models + their CharacterAppearance assets, including the five
+//     streamer staff personas of the Isekai Stream theme
+//   - Data/Themes/Theme_IsekaiStream.asset (active) and Theme_Medieval.asset
 //   - Prefabs/Characters/Character.prefab
 //
 // Assets you can edit (themes, appearances, prefabs, the controller's layout) are only created
-// when missing, so your edits are never overwritten. Clip assignment re-runs every time.
+// when missing, so your edits are never overwritten. Clip assignment re-runs every time, and
+// name keys added in newer versions are filled into existing themes (existing names are kept).
 //
 // Editor: InnKeeper → Setup Theme & Characters (also runs as part of Rebuild Graybox Inn)
 public static class ProjectSetup
@@ -32,6 +34,7 @@ public static class ProjectSetup
     const string TmpSettings = "Assets/TextMesh Pro/Resources/TMP Settings.asset";
 
     public const string ThemePath = ThemesDir + "/Theme_Medieval.asset";
+    public const string IsekaiThemePath = ThemesDir + "/Theme_IsekaiStream.asset";
     public const string StaffAppearancePath = AppearancesDir + "/App_Staff_Placeholder.asset";
     public const string GuestAppearancePath = AppearancesDir + "/App_Guest_Placeholder.asset";
     public const string CharacterPrefabPath = PrefabsDir + "/Character.prefab";
@@ -46,11 +49,37 @@ public static class ProjectSetup
 
     public struct Assets
     {
-        public ThemeProfile theme;
+        public ThemeProfile theme;          // the active theme for the scene (Isekai Stream)
+        public ThemeProfile medievalTheme;
         public CharacterAppearance staffAppearance;
         public CharacterAppearance guestAppearance;
+        public Dictionary<string, CharacterAppearance> personaByRole; // role key -> persona look
         public GameObject characterPrefab;
     }
+
+    // Accessories a placeholder mannequin can wear.
+    [System.Flags]
+    enum Look
+    {
+        None = 0, Apron = 1, TopHat = 2, CatEars = 4, CatTail = 8, ElfEars = 16,
+        Horns = 32, DragonTail = 64, Visor = 128, MaidHeadband = 256, ChefHat = 512,
+    }
+
+    // The Isekai Stream staff: original streamer personas, one per role.
+    // Primitive stand-ins until Live2D / real character art replaces them.
+    static readonly (string role, string id, string displayName, Color cloth, Color hair, Look look, float height)[] Personas =
+    {
+        (ThemeKeys.RoleClerk, "Lumi", "Lumi, Elf Receptionist",
+            new Color(0.50f, 0.30f, 0.75f), new Color(0.98f, 0.88f, 0.50f), Look.ElfEars, 1.0f),
+        (ThemeKeys.RolePorter, "Ember", "Ember, Dragon Porter",
+            new Color(0.60f, 0.15f, 0.15f), new Color(0.95f, 0.35f, 0.20f), Look.Horns | Look.DragonTail, 1.08f),
+        (ThemeKeys.RoleServer, "Mochi", "Mochi, Catgirl Server",
+            new Color(0.98f, 0.60f, 0.75f), new Color(0.80f, 0.65f, 1.00f), Look.CatEars | Look.CatTail | Look.Apron, 0.95f),
+        (ThemeKeys.RoleChambermaid, "Unit07", "Unit-07, Android Maid",
+            new Color(0.12f, 0.12f, 0.15f), new Color(0.75f, 0.95f, 1.00f), Look.Visor | Look.MaidHeadband | Look.Apron, 1.0f),
+        (ThemeKeys.RoleCook, "Gigi", "Gigi, Gremlin Chef",
+            new Color(1.00f, 0.55f, 0.15f), new Color(0.40f, 0.85f, 0.35f), Look.ChefHat | Look.Apron, 0.8f),
+    };
 
     [MenuItem("InnKeeper/Setup Theme & Characters")]
     public static void SetupMenu() => EnsureAssets();
@@ -64,15 +93,31 @@ public static class ProjectSetup
         var controller = EnsureController();
         AssignClips(controller);
 
-        var staffModel = EnsureMannequin("Mannequin_Staff", new Color(0.30f, 0.45f, 0.25f), apron: true, hat: false);
-        var guestModel = EnsureMannequin("Mannequin_Guest", new Color(0.25f, 0.35f, 0.60f), apron: false, hat: true);
+        var staffModel = EnsureMannequin("Mannequin_Staff", new Color(0.30f, 0.45f, 0.25f), null, Look.Apron);
+        var guestModel = EnsureMannequin("Mannequin_Guest", new Color(0.25f, 0.35f, 0.60f), null, Look.TopHat);
         var staffApp = EnsureAppearance(StaffAppearancePath, "Placeholder Staff", staffModel);
         var guestApp = EnsureAppearance(GuestAppearancePath, "Placeholder Guest", guestModel);
-        var theme = EnsureTheme(staffApp, guestApp);
+
+        var personaByRole = new Dictionary<string, CharacterAppearance>();
+        foreach (var p in Personas)
+        {
+            var model = EnsureMannequin("Persona_" + p.id, p.cloth, p.hair, p.look);
+            personaByRole[p.role] = EnsureAppearance(AppearancesDir + "/App_Persona_" + p.id + ".asset", p.displayName, model, p.height);
+        }
+
+        var medieval = EnsureTheme(ThemePath, theme => ConfigureMedieval(theme, staffApp, guestApp));
+        BackfillNames(medieval, MedievalNames);
+        var isekai = EnsureTheme(IsekaiThemePath, theme => ConfigureIsekai(theme, personaByRole.Values.ToArray(), guestApp));
+        BackfillNames(isekai, IsekaiNames);
         var prefab = EnsureCharacterPrefab(controller);
 
         AssetDatabase.SaveAssets();
-        return new Assets { theme = theme, staffAppearance = staffApp, guestAppearance = guestApp, characterPrefab = prefab };
+        return new Assets
+        {
+            theme = isekai, medievalTheme = medieval,
+            staffAppearance = staffApp, guestAppearance = guestApp,
+            personaByRole = personaByRole, characterPrefab = prefab,
+        };
     }
 
     // ---------- TextMeshPro ----------
@@ -295,8 +340,8 @@ public static class ProjectSetup
     // ---------- Placeholder models ----------
 
     // A simple person built from primitives, so swapping models can be tested before real art exists.
-    // Faces +Z. No rig, so it doesn't animate: real Humanoid models replace these.
-    static GameObject EnsureMannequin(string name, Color clothColor, bool apron, bool hat)
+    // Faces +Z. No rig, so it doesn't animate: real Humanoid models (or Live2D) replace these.
+    static GameObject EnsureMannequin(string name, Color clothColor, Color? hairColor, Look look)
     {
         string path = PlaceholderDir + "/" + name + ".prefab";
         var existing = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -305,8 +350,8 @@ public static class ProjectSetup
         var skin = EnsureMaterial("M_Char_Skin", new Color(0.93f, 0.76f, 0.62f));
         var cloth = EnsureMaterial("M_" + name + "_Cloth", clothColor);
         var trousers = EnsureMaterial("M_Char_Trousers", new Color(0.30f, 0.24f, 0.20f));
-        var accent = EnsureMaterial(apron ? "M_Char_Apron" : "M_Char_Hat",
-            apron ? new Color(0.92f, 0.90f, 0.85f) : new Color(0.35f, 0.22f, 0.12f));
+        var white = EnsureMaterial("M_Char_Apron", new Color(0.92f, 0.90f, 0.85f));
+        var hair = hairColor.HasValue ? EnsureMaterial("M_" + name + "_Hair", hairColor.Value) : null;
 
         var root = new GameObject(name);
         Part(root, PrimitiveType.Cylinder, "Leg_L", new Vector3(-0.1f, 0.4f, 0f), new Vector3(0.14f, 0.4f, 0.14f), trousers);
@@ -316,12 +361,53 @@ public static class ProjectSetup
         Part(root, PrimitiveType.Capsule, "Arm_R", new Vector3(0.27f, 1.15f, 0f), new Vector3(0.11f, 0.3f, 0.11f), cloth);
         Part(root, PrimitiveType.Sphere, "Head", new Vector3(0f, 1.68f, 0f), Vector3.one * 0.26f, skin);
         Part(root, PrimitiveType.Cube, "Nose", new Vector3(0f, 1.68f, 0.13f), Vector3.one * 0.05f, skin); // shows facing
-        if (apron)
-            Part(root, PrimitiveType.Cube, "Apron", new Vector3(0f, 0.95f, 0.15f), new Vector3(0.34f, 0.5f, 0.03f), accent);
-        if (hat)
+
+        if (hair != null)
         {
-            Part(root, PrimitiveType.Cylinder, "Hat_Brim", new Vector3(0f, 1.83f, 0f), new Vector3(0.38f, 0.01f, 0.38f), accent);
-            Part(root, PrimitiveType.Cylinder, "Hat_Top", new Vector3(0f, 1.92f, 0f), new Vector3(0.22f, 0.09f, 0.22f), accent);
+            // A cap over the top of the head plus long hair down the back.
+            Part(root, PrimitiveType.Sphere, "Hair_Top", new Vector3(0f, 1.75f, -0.01f), new Vector3(0.29f, 0.2f, 0.29f), hair);
+            Part(root, PrimitiveType.Cube, "Hair_Back", new Vector3(0f, 1.55f, -0.1f), new Vector3(0.28f, 0.42f, 0.08f), hair);
+        }
+
+        if (look.HasFlag(Look.Apron))
+            Part(root, PrimitiveType.Cube, "Apron", new Vector3(0f, 0.95f, 0.15f), new Vector3(0.34f, 0.5f, 0.03f), white);
+        if (look.HasFlag(Look.TopHat))
+        {
+            var hat = EnsureMaterial("M_Char_Hat", new Color(0.35f, 0.22f, 0.12f));
+            Part(root, PrimitiveType.Cylinder, "Hat_Brim", new Vector3(0f, 1.83f, 0f), new Vector3(0.38f, 0.01f, 0.38f), hat);
+            Part(root, PrimitiveType.Cylinder, "Hat_Top", new Vector3(0f, 1.92f, 0f), new Vector3(0.22f, 0.09f, 0.22f), hat);
+        }
+        if (look.HasFlag(Look.CatEars))
+        {
+            Part(root, PrimitiveType.Cube, "Ear_Cat_L", new Vector3(-0.09f, 1.85f, 0f), new Vector3(0.08f, 0.1f, 0.04f), hair, new Vector3(0, 0, 25f));
+            Part(root, PrimitiveType.Cube, "Ear_Cat_R", new Vector3(0.09f, 1.85f, 0f), new Vector3(0.08f, 0.1f, 0.04f), hair, new Vector3(0, 0, -25f));
+        }
+        if (look.HasFlag(Look.CatTail))
+            Part(root, PrimitiveType.Capsule, "Tail_Cat", new Vector3(0f, 0.8f, -0.25f), new Vector3(0.05f, 0.25f, 0.05f), hair, new Vector3(-40f, 0, 0));
+        if (look.HasFlag(Look.ElfEars))
+        {
+            Part(root, PrimitiveType.Cube, "Ear_Elf_L", new Vector3(-0.16f, 1.71f, 0f), new Vector3(0.13f, 0.03f, 0.03f), skin, new Vector3(0, 0, -25f));
+            Part(root, PrimitiveType.Cube, "Ear_Elf_R", new Vector3(0.16f, 1.71f, 0f), new Vector3(0.13f, 0.03f, 0.03f), skin, new Vector3(0, 0, 25f));
+        }
+        if (look.HasFlag(Look.Horns))
+        {
+            var bone = EnsureMaterial("M_Char_Horn", new Color(0.95f, 0.90f, 0.75f));
+            Part(root, PrimitiveType.Cylinder, "Horn_L", new Vector3(-0.08f, 1.87f, 0f), new Vector3(0.04f, 0.08f, 0.04f), bone, new Vector3(0, 0, 25f));
+            Part(root, PrimitiveType.Cylinder, "Horn_R", new Vector3(0.08f, 1.87f, 0f), new Vector3(0.04f, 0.08f, 0.04f), bone, new Vector3(0, 0, -25f));
+        }
+        if (look.HasFlag(Look.DragonTail))
+            Part(root, PrimitiveType.Capsule, "Tail_Dragon", new Vector3(0f, 0.5f, -0.3f), new Vector3(0.13f, 0.35f, 0.13f), cloth, new Vector3(-60f, 0, 0));
+        if (look.HasFlag(Look.Visor))
+        {
+            var glow = EnsureMaterial("M_Char_Visor", new Color(0.30f, 0.95f, 1.00f));
+            Part(root, PrimitiveType.Cube, "Visor", new Vector3(0f, 1.71f, 0.12f), new Vector3(0.25f, 0.05f, 0.04f), glow);
+        }
+        if (look.HasFlag(Look.MaidHeadband))
+            Part(root, PrimitiveType.Cube, "Headband", new Vector3(0f, 1.84f, 0.03f), new Vector3(0.27f, 0.04f, 0.07f), white);
+        if (look.HasFlag(Look.ChefHat))
+        {
+            Part(root, PrimitiveType.Cylinder, "ChefHat_Band", new Vector3(0f, 1.86f, 0f), new Vector3(0.22f, 0.06f, 0.22f), white);
+            Part(root, PrimitiveType.Sphere, "ChefHat_Puff", new Vector3(0f, 1.98f, 0f), new Vector3(0.3f, 0.17f, 0.3f), white);
         }
 
         var prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
@@ -329,13 +415,14 @@ public static class ProjectSetup
         return prefab;
     }
 
-    static void Part(GameObject root, PrimitiveType type, string name, Vector3 pos, Vector3 scale, Material mat)
+    static void Part(GameObject root, PrimitiveType type, string name, Vector3 pos, Vector3 scale, Material mat, Vector3 euler = default)
     {
         var go = GameObject.CreatePrimitive(type);
         go.name = name;
         Object.DestroyImmediate(go.GetComponent<Collider>());
         go.transform.SetParent(root.transform, false);
         go.transform.localPosition = pos;
+        go.transform.localRotation = Quaternion.Euler(euler);
         go.transform.localScale = scale;
         go.GetComponent<MeshRenderer>().sharedMaterial = mat;
     }
@@ -354,44 +441,46 @@ public static class ProjectSetup
 
     // ---------- Data assets ----------
 
-    static CharacterAppearance EnsureAppearance(string path, string displayName, GameObject model)
+    static CharacterAppearance EnsureAppearance(string path, string displayName, GameObject model, float height = 1f)
     {
         var app = AssetDatabase.LoadAssetAtPath<CharacterAppearance>(path);
         if (app != null) return app;
         app = ScriptableObject.CreateInstance<CharacterAppearance>();
         app.displayName = displayName;
         app.modelPrefab = model;
+        app.heightScale = height;
         AssetDatabase.CreateAsset(app, path);
         return app;
     }
 
-    static ThemeProfile EnsureTheme(CharacterAppearance staff, CharacterAppearance guest)
+    static ThemeProfile EnsureTheme(string path, System.Action<ThemeProfile> configure)
     {
-        var theme = AssetDatabase.LoadAssetAtPath<ThemeProfile>(ThemePath);
+        var theme = AssetDatabase.LoadAssetAtPath<ThemeProfile>(path);
         if (theme != null) return theme;
-
         theme = ScriptableObject.CreateInstance<ThemeProfile>();
+        configure(theme);
+        AssetDatabase.CreateAsset(theme, path);
+        Debug.Log("[Setup] Created " + path);
+        return theme;
+    }
+
+    // Adds any name keys the theme doesn't have yet. Never changes names that are already there.
+    static void BackfillNames(ThemeProfile theme, (string key, string name)[] defaults)
+    {
+        var have = new HashSet<string>(theme.names.Select(n => n.key));
+        var added = defaults.Where(d => !have.Contains(d.key)).ToArray();
+        if (added.Length == 0) return;
+        foreach (var d in added) theme.names.Add(N(d.key, d.name));
+        EditorUtility.SetDirty(theme);
+        Debug.Log($"[Setup] Added {added.Length} new name(s) to {theme.name}: {string.Join(", ", added.Select(a => a.key))}");
+    }
+
+    static void ConfigureMedieval(ThemeProfile theme, CharacterAppearance staff, CharacterAppearance guest)
+    {
         theme.innName = "The Wayside";
         theme.currencyName = "Coin";
         theme.currencySymbol = "c";
-        theme.names = new List<ThemeProfile.NameEntry>
-        {
-            N(ThemeKeys.RoleClerk, "Clerk"), N(ThemeKeys.RolePorter, "Porter"), N(ThemeKeys.RoleServer, "Server"),
-            N(ThemeKeys.RoleChambermaid, "Chambermaid"), N(ThemeKeys.RoleCook, "Cook"),
-            N(ThemeKeys.GuestPilgrim, "Pilgrim"), N(ThemeKeys.GuestTraveller, "Traveller"),
-            N(ThemeKeys.GuestMerchant, "Merchant"), N(ThemeKeys.GuestNoble, "Noble"),
-            N(ThemeKeys.RoomBunk, "Bunk Room"), N(ThemeKeys.RoomCommon, "Common Room"),
-            N(ThemeKeys.RoomPrivate, "Private Chamber"), N(ThemeKeys.RoomSuite, "Noble Suite"),
-            N(ThemeKeys.ServiceMeal, "Supper"), N(ThemeKeys.ServiceDrink, "Ale"), N(ThemeKeys.ServiceFirewood, "Firewood"),
-            N(ThemeKeys.ServiceBath, "Hot Bath"), N(ThemeKeys.ServiceTurndown, "Turndown"),
-            N(ThemeKeys.ServiceBootPolish, "Boot Polish"), N(ThemeKeys.ServiceWakeUp, "Wake-up Call"),
-            N(ThemeKeys.ServiceLuggage, "Luggage"),
-            N(ThemeKeys.TierD, "Apprentice"), N(ThemeKeys.TierC, "Hand"), N(ThemeKeys.TierB, "Journeyman"),
-            N(ThemeKeys.TierA, "Skilled"), N(ThemeKeys.TierS, "Master"),
-            N(ThemeKeys.PlaceFrontDesk, "Front Desk"), N(ThemeKeys.PlaceKitchen, "Kitchen"),
-            N(ThemeKeys.PlaceLaundry, "Laundry"), N(ThemeKeys.PlaceRestArea, "Servants' Room"),
-            N(ThemeKeys.PlaceYard, "Yard"),
-        };
+        theme.names = MedievalNames.Select(n => N(n.key, n.name)).ToList();
         theme.firstNames = new[]
         {
             "Marta", "Edric", "Agnes", "Osric", "Matilda", "Wulfric", "Beatrix", "Godwin", "Isolde", "Aldous",
@@ -400,18 +489,89 @@ public static class ProjectSetup
         theme.palette = ThemePalette.Default;
         theme.props = new List<ThemeProfile.PropEntry>(); // empty = keep the graybox blocks
         theme.staffAppearances = new[] { staff };
-        theme.guestAppearances = new List<ThemeProfile.AppearancePool>
-        {
-            new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestPilgrim, appearances = new[] { guest } },
-            new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestTraveller, appearances = new[] { guest } },
-            new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestMerchant, appearances = new[] { guest } },
-            new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestNoble, appearances = new[] { guest } },
-        };
-
-        AssetDatabase.CreateAsset(theme, ThemePath);
-        Debug.Log("[Setup] Created " + ThemePath);
-        return theme;
+        theme.guestAppearances = GuestPools(guest);
     }
+
+    // Medieval fantasy locals check in; the inn is run by streamer-persona staff who woke up in this world.
+    static void ConfigureIsekai(ThemeProfile theme, CharacterAppearance[] personas, CharacterAppearance guest)
+    {
+        theme.innName = "The Second Life Inn";
+        theme.currencyName = "Gold";
+        theme.currencySymbol = "g";
+        theme.names = IsekaiNames.Select(n => N(n.key, n.name)).ToList();
+        // Original names for hiring-board candidates (not real streamers).
+        theme.firstNames = new[]
+        {
+            "Mochi", "Lumi", "Ember", "Gigi", "Yuzu", "Pipi", "Nova", "Kiko", "Momo", "Zuzu",
+            "Coco", "Fable", "Tansy", "Bun", "Rhea", "Puddle", "Sora", "Wisp", "Lark", "Taffy",
+        };
+        theme.palette = new ThemePalette
+        {
+            panel = new Color(0.18f, 0.10f, 0.28f, 0.92f),
+            panelAccent = new Color(0.45f, 0.20f, 0.60f, 1f),
+            text = new Color(0.98f, 0.95f, 1.00f),
+            textMuted = new Color(0.80f, 0.72f, 0.90f),
+            highlight = new Color(1.00f, 0.45f, 0.75f),
+            good = new Color(0.40f, 0.95f, 0.70f),
+            warning = new Color(1.00f, 0.85f, 0.35f),
+            bad = new Color(1.00f, 0.35f, 0.45f),
+        };
+        theme.backgroundColor = new Color(0.62f, 0.56f, 0.82f); // twilight lilac
+        theme.sunColor = new Color(1.00f, 0.88f, 0.90f);
+        theme.sunIntensity = 1.15f;
+        theme.ambientColor = new Color(0.50f, 0.45f, 0.60f);
+        theme.props = new List<ThemeProfile.PropEntry>();
+        theme.staffAppearances = personas;
+        theme.guestAppearances = GuestPools(guest);
+    }
+
+    static List<ThemeProfile.AppearancePool> GuestPools(CharacterAppearance guest) => new List<ThemeProfile.AppearancePool>
+    {
+        new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestPilgrim, appearances = new[] { guest } },
+        new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestTraveller, appearances = new[] { guest } },
+        new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestMerchant, appearances = new[] { guest } },
+        new ThemeProfile.AppearancePool { guestType = ThemeKeys.GuestNoble, appearances = new[] { guest } },
+    };
+
+    public static readonly (string key, string name)[] MedievalNames =
+    {
+        (ThemeKeys.RoleClerk, "Clerk"), (ThemeKeys.RolePorter, "Porter"), (ThemeKeys.RoleServer, "Server"),
+        (ThemeKeys.RoleChambermaid, "Chambermaid"), (ThemeKeys.RoleCook, "Cook"),
+        (ThemeKeys.GuestPilgrim, "Pilgrim"), (ThemeKeys.GuestTraveller, "Traveller"),
+        (ThemeKeys.GuestMerchant, "Merchant"), (ThemeKeys.GuestNoble, "Noble"),
+        (ThemeKeys.RoomBunk, "Bunk Room"), (ThemeKeys.RoomCommon, "Common Room"),
+        (ThemeKeys.RoomPrivate, "Private Chamber"), (ThemeKeys.RoomSuite, "Noble Suite"),
+        (ThemeKeys.ServiceMeal, "Supper"), (ThemeKeys.ServiceDrink, "Ale"), (ThemeKeys.ServiceFirewood, "Firewood"),
+        (ThemeKeys.ServiceBath, "Hot Bath"), (ThemeKeys.ServiceTurndown, "Turndown"),
+        (ThemeKeys.ServiceBootPolish, "Boot Polish"), (ThemeKeys.ServiceWakeUp, "Wake-up Call"),
+        (ThemeKeys.ServiceLuggage, "Luggage"),
+        (ThemeKeys.TierD, "Apprentice"), (ThemeKeys.TierC, "Hand"), (ThemeKeys.TierB, "Journeyman"),
+        (ThemeKeys.TierA, "Skilled"), (ThemeKeys.TierS, "Master"),
+        (ThemeKeys.PlaceFrontDesk, "Front Desk"), (ThemeKeys.PlaceKitchen, "Kitchen"),
+        (ThemeKeys.PlaceLaundry, "Laundry"), (ThemeKeys.PlaceRestArea, "Servants' Room"),
+        (ThemeKeys.PlaceYard, "Yard"),
+        (ThemeKeys.UiPurse, "Purse"), (ThemeKeys.UiReputation, "Reputation"), (ThemeKeys.UiTip, "Tip"),
+    };
+
+    public static readonly (string key, string name)[] IsekaiNames =
+    {
+        (ThemeKeys.RoleClerk, "Receptionist"), (ThemeKeys.RolePorter, "Porter"), (ThemeKeys.RoleServer, "Server"),
+        (ThemeKeys.RoleChambermaid, "Maid"), (ThemeKeys.RoleCook, "Chef"),
+        (ThemeKeys.GuestPilgrim, "Pilgrim"), (ThemeKeys.GuestTraveller, "Adventurer"),
+        (ThemeKeys.GuestMerchant, "Merchant"), (ThemeKeys.GuestNoble, "Noble"),
+        (ThemeKeys.RoomBunk, "Party Bunks"), (ThemeKeys.RoomCommon, "Cozy Room"),
+        (ThemeKeys.RoomPrivate, "Private Room"), (ThemeKeys.RoomSuite, "Royal Suite"),
+        (ThemeKeys.ServiceMeal, "Hearty Stew"), (ThemeKeys.ServiceDrink, "Fizzy Mead"), (ThemeKeys.ServiceFirewood, "Firewood"),
+        (ThemeKeys.ServiceBath, "Hot Spring Bath"), (ThemeKeys.ServiceTurndown, "Pillow Fluffing"),
+        (ThemeKeys.ServiceBootPolish, "Boot Shine"), (ThemeKeys.ServiceWakeUp, "Morning Call"),
+        (ThemeKeys.ServiceLuggage, "Inventory Carry"),
+        (ThemeKeys.TierD, "Trainee"), (ThemeKeys.TierC, "Debuted"), (ThemeKeys.TierB, "Partner"),
+        (ThemeKeys.TierA, "Top Streamer"), (ThemeKeys.TierS, "Legend"),
+        (ThemeKeys.PlaceFrontDesk, "Reception"), (ThemeKeys.PlaceKitchen, "Kitchen"),
+        (ThemeKeys.PlaceLaundry, "Laundry"), (ThemeKeys.PlaceRestArea, "Green Room"),
+        (ThemeKeys.PlaceYard, "Yard"),
+        (ThemeKeys.UiPurse, "Gold"), (ThemeKeys.UiReputation, "Followers"), (ThemeKeys.UiTip, "Donation"),
+    };
 
     static ThemeProfile.NameEntry N(string key, string value) => new ThemeProfile.NameEntry { key = key, displayName = value };
 

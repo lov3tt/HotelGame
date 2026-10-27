@@ -50,6 +50,11 @@ public static class ThemeKeys
     public const string PlaceRestArea = "place.rest_area";
     public const string PlaceYard = "place.yard";
 
+    // UI labels
+    public const string UiPurse = "ui.purse";
+    public const string UiReputation = "ui.reputation"; // "Followers" in the stream theme
+    public const string UiTip = "ui.tip";               // "Donation" in the stream theme
+
     // Props (graybox blocks a theme can replace with a prefab)
     public const string PropBed = "prop.bed";
     public const string PropBedDouble = "prop.bed_double";

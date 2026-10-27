@@ -310,6 +310,8 @@ public static class GrayboxBuilder
         game.SetActive(true);
     }
 
+    public const string HudPurseTemplate = "{ui.purse}: 100{currency.symbol}";
+
     // Top bar with the inn's name and a purse placeholder (the real purse arrives with the economy).
     static void BuildHud()
     {
@@ -330,7 +332,7 @@ public static class GrayboxBuilder
         bar.AddComponent<ThemedGraphic>();
 
         Label("InnName", barRect, "{inn.name}", PaletteRole.Highlight, 36, TextAlignmentOptions.MidlineLeft);
-        Label("Purse", barRect, "Purse: 100{currency.symbol}", PaletteRole.Text, 28, TextAlignmentOptions.MidlineRight);
+        Label("Purse", barRect, HudPurseTemplate, PaletteRole.Text, 28, TextAlignmentOptions.MidlineRight);
 
         new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
     }
@@ -354,14 +356,18 @@ public static class GrayboxBuilder
         themed.Template = template; // refresh now so the label shows in the editor straight away
     }
 
-    // A few characters standing about, to show the model and theme systems working.
+    // The staff personas at their posts plus a couple of guests, to show the model and theme systems working.
     static void BuildDemoCharacters(ProjectSetup.Assets setup)
     {
         var root = new GameObject("Characters");
-        DemoCharacter(setup.characterPrefab, root, "Clerk", setup.staffAppearance, new Vector3(-1f, 0, 4.2f), 180f);
+        var staff = setup.personaByRole;
+        DemoCharacter(setup.characterPrefab, root, "Clerk", staff[ThemeKeys.RoleClerk], new Vector3(-1f, 0, 4.2f), 180f);
         DemoCharacter(setup.characterPrefab, root, "Guest_AtDesk", setup.guestAppearance, new Vector3(-0.3f, 0, 1.4f), -30f);
-        DemoCharacter(setup.characterPrefab, root, "Server_Walkway", setup.staffAppearance, new Vector3(2f, FloorHeight, 0.9f), 90f);
-        DemoCharacter(setup.characterPrefab, root, "Guest_InRoom", setup.guestAppearance, new Vector3(1.4f, FloorHeight, 3.2f), 200f);
+        DemoCharacter(setup.characterPrefab, root, "Cook", staff[ThemeKeys.RoleCook], new Vector3(5.6f, 0, 3.4f), 160f);
+        DemoCharacter(setup.characterPrefab, root, "Porter", staff[ThemeKeys.RolePorter], new Vector3(14.5f, 0, 2.5f), 200f);
+        DemoCharacter(setup.characterPrefab, root, "Server_Walkway", staff[ThemeKeys.RoleServer], new Vector3(2f, FloorHeight, 0.9f), 90f);
+        DemoCharacter(setup.characterPrefab, root, "Chambermaid", staff[ThemeKeys.RoleChambermaid], new Vector3(7.2f, FloorHeight, 3f), 180f);
+        DemoCharacter(setup.characterPrefab, root, "Guest_InRoom", setup.guestAppearance, new Vector3(2.6f, FloorHeight, 2.6f), 200f);
     }
 
     static void DemoCharacter(GameObject prefab, GameObject parent, string name, CharacterAppearance look, Vector3 pos, float yaw)

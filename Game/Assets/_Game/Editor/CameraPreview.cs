@@ -22,6 +22,8 @@ public static class CameraPreview
         ("3_tilting", 0.8f, new Vector3(4f, 4.5f, 3f)),
         ("4_zoomed_in_3d", 1f, new Vector3(8.5f, 7f, 3f)),
         ("5_lobby_characters_3d", 1f, new Vector3(-0.8f, 1.1f, 2.5f)),
+        ("6_reception_and_kitchen", 0.9f, new Vector3(2.5f, 1.2f, 2.5f)),
+        ("7_first_floor_staff", 0.92f, new Vector3(4.5f, 4.1f, 2.5f)),
     };
 
     [MenuItem("InnKeeper/Capture Camera Previews")]

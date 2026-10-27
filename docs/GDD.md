@@ -3,7 +3,7 @@
 **Genre:** Tycoon / management strategy, hotel & room service
 **Engine:** Unity 6 LTS (URP), 3D scene presented as a **2D side-view cutaway**
 **Camera:** Zoomed out it looks like a flat 2D hotel game, with every floor visible like a dollhouse. Zooming in close swings into an angled 3D perspective.
-**Setting:** Grounded medieval grand inn (no magic), swappable via themes
+**Setting:** Medieval grand inn, run by isekai'd streamer-persona staff (active theme: Isekai Stream, see §1b). A plain medieval theme is also included.
 **Time model:** Real-time with pause (1x / 2x / 3x)
 **Current scope:** Vertical slice, ~30 minutes / 7 in-game days
 
@@ -24,6 +24,50 @@ Every coin comes from filling rooms, answering bells fast and turning rooms over
 4. **Make it yours.** The theme, names and character models can be swapped without touching code.
 
 ---
+
+## 1b. The Twist: Isekai Stream Inn (active theme)
+**Premise:** a troupe of streamers wakes up inside a medieval fantasy world. They decide to run an inn the only way they know how: **as if it were on stream**.
+- Guests are ordinary fantasy locals: pilgrims, adventurers, merchants, nobles.
+- The staff are **original VTuber-style personas**. No real streamers or likenesses are used.
+- The tone is cute, chaotic and cozy, not suggestive, so it suits all audiences and store requirements.
+
+The gameplay is identical to the base design. The twist lives in the `Theme_IsekaiStream` theme plus a few stream-flavoured presentation features. Switching back to `Theme_Medieval` gives the plain inn.
+
+### Starting staff personas
+| Persona | Role | Gimmick | Natural traits |
+|---|---|---|---|
+| **Lumi**, Elf Receptionist | Clerk | Elegant, polite, secretly competitive | Charming, Discreet |
+| **Ember**, Dragon Porter | Porter | Sleepy, huge, carries everything at once | Strong Back, Lazy |
+| **Mochi**, Catgirl Server | Server | Hyperactive, everyone's favourite | Charming, Diligent (tires fast) |
+| **Unit-07**, Android Maid | Chambermaid | Deadpan, flawless, zero charm | Steady |
+| **Gigi**, Gremlin Chef | Cook | Chaotic, loud, occasionally on fire | Gossip (team morale up, sometimes burns the stew) |
+
+Hiring-board candidates are new original personas, drawn from the theme's name pool.
+
+### Stream-flavoured presentation
+These are names in the theme; the underlying mechanics are unchanged.
+
+| Base mechanic | In this theme |
+|---|---|
+| Reputation (stars) | **Followers** |
+| Tips | **Donations**, with on-screen alerts for big ones |
+| Tiers D → S | Trainee → Debuted → Partner → Top Streamer → **Legend** |
+| Servants' room (rest area) | **Green Room** |
+| Hot bath service | **Hot Spring Bath** |
+| Luggage service | **Inventory Carry** |
+| Currency | Gold (g) |
+
+### Planned stream features (post-slice, presentation only)
+- **Chat feed:** guest feedback appears as chat messages, e.g. "the bath was cold lol" or "Mochi carried 2 trays POG".
+- **Raid events:** a Noble or a big pilgrim group arrives as a "raid", a burst of guests at once.
+- **Live2D staff portraits:** in the staff bar, hiring board and events. Expressions react to fatigue, morale and rush-hour panic.
+  - Built on the official Cubism SDK for Unity.
+  - A Live2D appearance would plug into `CharacterAppearance` / `AgentAnimator`, so gameplay code is unaffected.
+- **Persona events:** for example, "Gigi set the kitchen on fire. Chat loved it (+followers, −stew)."
+
+### Art notes
+- **Placeholders for now:** the personas are primitive models (hair, ears, horns, tails, visor, chef hat) that stand in for real art.
+- **Live2D art has to be licensed for game use.** Commission new models, or use models whose licence allows commercial game use. Never reuse existing VTuber models.
 
 ## 2. Core Loop
 

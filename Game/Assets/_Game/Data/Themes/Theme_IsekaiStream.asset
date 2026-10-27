@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f8571e04c8ef1429c18014a6aa0074, type: 3}
+  m_Name: Theme_IsekaiStream
+  m_EditorClassIdentifier: 
+  innName: The Second Life Inn
+  currencyName: Gold
+  currencySymbol: g
+  names:
+  - key: role.clerk
+    displayName: Receptionist
+  - key: role.porter
+    displayName: Porter
+  - key: role.server
+    displayName: Server
+  - key: role.chambermaid
+    displayName: Maid
+  - key: role.cook
+    displayName: Chef
+  - key: guest.pilgrim
+    displayName: Pilgrim
+  - key: guest.traveller
+    displayName: Adventurer
+  - key: guest.merchant
+    displayName: Merchant
+  - key: guest.noble
+    displayName: Noble
+  - key: room.bunk
+    displayName: Party Bunks
+  - key: room.common
+    displayName: Cozy Room
+  - key: room.private
+    displayName: Private Room
+  - key: room.suite
+    displayName: Royal Suite
+  - key: service.meal
+    displayName: Hearty Stew
+  - key: service.drink
+    displayName: Fizzy Mead
+  - key: service.firewood
+    displayName: Firewood
+  - key: service.bath
+    displayName: Hot Spring Bath
+  - key: service.turndown
+    displayName: Pillow Fluffing
+  - key: service.boot_polish
+    displayName: Boot Shine
+  - key: service.wake_up
+    displayName: Morning Call
+  - key: service.luggage
+    displayName: Inventory Carry
+  - key: tier.d
+    displayName: Trainee
+  - key: tier.c
+    displayName: Debuted
+  - key: tier.b
+    displayName: Partner
+  - key: tier.a
+    displayName: Top Streamer
+  - key: tier.s
+    displayName: Legend
+  - key: place.front_desk
+    displayName: Reception
+  - key: place.kitchen
+    displayName: Kitchen
+  - key: place.laundry
+    displayName: Laundry
+  - key: place.rest_area
+    displayName: Green Room
+  - key: place.yard
+    displayName: Yard
+  - key: ui.purse
+    displayName: Gold
+  - key: ui.reputation
+    displayName: Followers
+  - key: ui.tip
+    displayName: Donation
+  firstNames:
+  - Mochi
+  - Lumi
+  - Ember
+  - Gigi
+  - Yuzu
+  - Pipi
+  - Nova
+  - Kiko
+  - Momo
+  - Zuzu
+  - Coco
+  - Fable
+  - Tansy
+  - Bun
+  - Rhea
+  - Puddle
+  - Sora
+  - Wisp
+  - Lark
+  - Taffy
+  palette:
+    panel: {r: 0.18, g: 0.1, b: 0.28, a: 0.92}
+    panelAccent: {r: 0.45, g: 0.2, b: 0.6, a: 1}
+    text: {r: 0.98, g: 0.95, b: 1, a: 1}
+    textMuted: {r: 0.8, g: 0.72, b: 0.9, a: 1}
+    highlight: {r: 1, g: 0.45, b: 0.75, a: 1}
+    good: {r: 0.4, g: 0.95, b: 0.7, a: 1}
+    warning: {r: 1, g: 0.85, b: 0.35, a: 1}
+    bad: {r: 1, g: 0.35, b: 0.45, a: 1}
+  uiFont: {fileID: 0}
+  panelSprite: {fileID: 0}
+  props: []
+  backgroundColor: {r: 0.62, g: 0.56, b: 0.82, a: 1}
+  sunColor: {r: 1, g: 0.88, b: 0.9, a: 1}
+  sunIntensity: 1.15
+  ambientColor: {r: 0.5, g: 0.45, b: 0.6, a: 1}
+  serviceBell: {fileID: 0}
+  music: {fileID: 0}
+  staffAppearances:
+  - {fileID: 11400000, guid: 455695ff7fdad634faf0ff5af3cf6f4f, type: 2}
+  - {fileID: 11400000, guid: d592659be69f6154a831ecf121a0be0f, type: 2}
+  - {fileID: 11400000, guid: a79736a1cddafc84fbbcdf6024844280, type: 2}
+  - {fileID: 11400000, guid: ddc552e0247972e45a5196463a4013f6, type: 2}
+  - {fileID: 11400000, guid: 50021753702794543baa6b7a2af959aa, type: 2}
+  guestAppearances:
+  - guestType: guest.pilgrim
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}
+  - guestType: guest.traveller
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}
+  - guestType: guest.merchant
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}
+  - guestType: guest.noble
+    appearances:
+    - {fileID: 11400000, guid: f8a62b7d7fba6dc49a1e374ff3fd0e04, type: 2}

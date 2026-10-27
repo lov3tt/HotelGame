@@ -50,6 +50,20 @@ public static class Milestone2Checks
 
     static void CheckThemeFormatting()
     {
+        // Every key used in code must have a name in both shipped themes.
+        var keys = typeof(ThemeKeys).GetFields().Where(f => f.IsLiteral).Select(f => (string)f.GetRawConstantValue())
+            .Where(k => !k.StartsWith("prop.")).ToArray();
+        foreach (var path in new[] { ProjectSetup.ThemePath, ProjectSetup.IsekaiThemePath })
+        {
+            var t = AssetDatabase.LoadAssetAtPath<ThemeProfile>(path);
+            var missing = t == null ? keys : keys.Where(k => t.GetName(k) == k).ToArray();
+            Check(missing.Length == 0, $"{System.IO.Path.GetFileNameWithoutExtension(path)} names every key" +
+                (missing.Length > 0 ? " (missing: " + string.Join(", ", missing) + ")" : ""));
+        }
+        var isekai = AssetDatabase.LoadAssetAtPath<ThemeProfile>(ProjectSetup.IsekaiThemePath);
+        Check(isekai != null && isekai.staffAppearances.Length == 5 && isekai.staffAppearances.All(a => a != null && a.modelPrefab != null),
+            "Isekai Stream theme has 5 staff personas with models");
+
         var theme = AssetDatabase.LoadAssetAtPath<ThemeProfile>(ProjectSetup.ThemePath);
         Check(theme != null, "Theme_Medieval exists");
         if (theme == null) return;
@@ -96,7 +110,8 @@ public static class Milestone2Checks
         Check(innName.alignment == TextAlignmentOptions.MidlineLeft && purse.alignment == TextAlignmentOptions.MidlineRight,
             "inn name sits left, purse sits right");
         Check(innName.font != null, "HUD text has a font (TextMeshPro essentials imported)");
-        Check(purse.text == "Purse: 100c", $"purse label is themed (shows \"{purse.text}\")");
+        string expected = ThemeManager.Current != null ? ThemeManager.Current.Format(GrayboxBuilder.HudPurseTemplate) : "?";
+        Check(purse.text == expected && !purse.text.Contains("ui."), $"purse label is themed (shows \"{purse.text}\")");
     }
 
     static void CheckThemeSwap()
@@ -107,7 +122,14 @@ public static class Milestone2Checks
         if (manager == null || innName == null) return;
 
         var original = ThemeManager.Current;
-        Check(original != null && innName.text == "The Wayside", "HUD shows the Medieval inn name");
+        Check(original != null && innName.text == original.innName, $"HUD shows the active theme's inn name ({innName.text})");
+
+        // The two shipped themes: swap between them for real.
+        var medieval = AssetDatabase.LoadAssetAtPath<ThemeProfile>(ProjectSetup.ThemePath);
+        manager.SetTheme(medieval);
+        Check(innName.text == "The Wayside", "switching to Theme_Medieval shows The Wayside");
+        manager.SetTheme(original);
+        Check(innName.text == original.innName, "switching back shows " + original.innName);
 
         // A throwaway theme with different names, colours and a replacement bed.
         var testTheme = Object.Instantiate(original);
@@ -130,7 +152,7 @@ public static class Milestone2Checks
         Check(desk.Spawned == null && desk.GetComponent<Renderer>().enabled, "props the theme doesn't replace keep their graybox block");
 
         manager.SetTheme(original);
-        Check(innName.text == "The Wayside" && beds.All(b => b.Spawned == null && b.GetComponent<Renderer>().enabled),
+        Check(innName.text == original.innName && beds.All(b => b.Spawned == null && b.GetComponent<Renderer>().enabled),
             "switching back restores names and graybox beds");
 
         Object.DestroyImmediate(fakeBed);
@@ -140,11 +162,11 @@ public static class Milestone2Checks
     static void CheckModelSwap()
     {
         var rigs = Object.FindObjectsByType<CharacterRig>(FindObjectsSortMode.None);
-        Check(rigs.Length == 4, $"scene has 4 demo characters (found {rigs.Length})");
+        Check(rigs.Length == 7, $"scene has 7 demo characters (found {rigs.Length})");
         var clerk = rigs.FirstOrDefault(r => r.name == "Clerk");
         if (clerk == null) { Check(false, "Clerk demo character exists"); return; }
 
-        Check(clerk.Model != null && clerk.Model.transform.Find("Apron") != null, "Clerk shows the staff model (apron)");
+        Check(clerk.Model != null && clerk.Model.transform.Find("Ear_Elf_L") != null, "Clerk shows the Lumi persona (elf ears)");
 
         var guestLook = AssetDatabase.LoadAssetAtPath<CharacterAppearance>(ProjectSetup.GuestAppearancePath);
         var staffLook = clerk.Appearance;

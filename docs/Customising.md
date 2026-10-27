@@ -15,7 +15,13 @@ A **ThemeProfile** asset holds:
 - **Audio:** service bell and music.
 - **Characters:** which looks new staff and each guest type get.
 
-The default is `Assets/_Game/Data/Themes/Theme_Medieval.asset`.
+Two themes ship in `Assets/_Game/Data/Themes/`:
+- **Theme_IsekaiStream** (active): The Second Life Inn, with streamer-persona staff, pastel UI and a twilight sky.
+- **Theme_Medieval:** The Wayside, the plain medieval inn.
+
+To switch between them, drag one onto the **Game** object's **ThemeManager → Theme**.
+
+Each persona's look is an appearance asset (`Data/Appearances/App_Persona_*.asset`). Replace its model with real art, such as a Humanoid model or later a Live2D model, and every place that persona appears updates.
 
 ### Make a new theme
 1. In the Project window, select `Theme_Medieval` and press **Ctrl+D** to duplicate it. Rename the copy, e.g. `Theme_Saloon`.
